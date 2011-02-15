@@ -81,13 +81,13 @@ For the most part, version 1.0 of <tt>vestal_versions</tt> is backwards compatib
     change_table :versions do |t|
       t.belongs_to :user, :polymorphic => true
       t.string :user_name
-      t.string :tag
+      t.string :version_tag
     end
 
     change_table :versions do |t|
       t.index [:user_id, :user_type]
       t.index :user_name
-      t.index :tag
+      t.index :version_tag
     end
 
 * When a model is created (or updated the first time after being versioned), an initial version record with a number of 1 is no longer created. These aren't used during reversion and so they end up just being dead weight. Feel free to scrap all your versions where <tt>number == 1</tt> after the upgrade if you'd like to free up some room in your database (but you don't have to).
@@ -115,18 +115,18 @@ There are a handful of exciting new additions in version 1.0 of <tt>vestal_versi
 
   Also available, are <tt>merge_version</tt> and <tt>append_version</tt> blocks. The <tt>merge_version</tt> block will compile the possibly multiple versions that would result from the updates inside the block into one summary version. The single resulting version is then tacked onto the version history as usual. The <tt>append_version</tt> block works similarly except that the resulting single version is combined with the most recent version in the history and saved.
 
-* Version tagging. Any version can have a tag attached to it (must be unique within the scope of the versioned parent) and that tag can be used for reversion.
+* Version version_tagging. Any version can have a version_tag attached to it (must be unique within the scope of the versioned parent) and that version_tag can be used for reversion.
 
     @user.name # => "Steve Richert"
     @user.update_attribute(:last_name, "Jobs")
     @user.name # => "Steve Jobs"
-    @user.tag_version("apple")
+    @user.version_tag_version("apple")
     @user.update_attribute(:last_name, "Richert")
     @user.name # => "Steve Richert"
     @user.revert_to("apple")
     @user.name # => "Steve Jobs"
 
-  So if you're not big on version numbers, you could just tag your versions and avoid the numbers altogether.
+  So if you're not big on version numbers, you could just version_tag your versions and avoid the numbers altogether.
 
 * Resetting. This is basically a hard revert. The new <tt>reset_to!</tt> instance method behaves just like the <tt>revert_to!</tt> method except that after the reversion, it will also scrap all the versions that came after that target version.
 
@@ -164,7 +164,7 @@ There are a handful of exciting new additions in version 1.0 of <tt>vestal_versi
 
 * A <tt>versioned?</tt> convenience class method. If your user model is versioned, <tt>User.versioned?</tt> will let you know.
 
-* Soft Deletes & Restoration.  By setting <tt>:dependent</tt> to <tt>:tracking</tt> destroys will be tracked.  On destroy a new version will be created storing the complete details of the object with a tag of 'deleted'.  The object can later be restored using the <tt>restore!</tt> method on the VestalVersions::Version record.  The attributes of the restored object will be set using the attribute writer methods.  After a restore! is performed the version record with the 'deleted' tag is removed from the history.
+* Soft Deletes & Restoration.  By setting <tt>:dependent</tt> to <tt>:tracking</tt> destroys will be tracked.  On destroy a new version will be created storing the complete details of the object with a version_tag of 'deleted'.  The object can later be restored using the <tt>restore!</tt> method on the VestalVersions::Version record.  The attributes of the restored object will be set using the attribute writer methods.  After a restore! is performed the version record with the 'deleted' version_tag is removed from the history.
 
     class User < ActiveRecord::Base
       versioned :dependent => :tracking
@@ -177,7 +177,7 @@ There are a handful of exciting new additions in version 1.0 of <tt>vestal_versi
     >> User.find(2)
     => ActiveRecord::RecordNotFound: Couldn't find User with ID=2
     >> VestalVersions::Version.last
-    => <VestalVersions::Version id: 4, versioned_id: 2, versioned_type: "User", user_id: nil, user_type: nil, user_name: nil, modifications: {"created_at"=>Sun Aug 01 18:39:57 UTC 2010, "updated_at"=>Sun Aug 01 18:42:28 UTC 2010, "id"=>2, "last_name"=>"Jobs", "first_name"=>"Stephen"}, number: 3, tag: "deleted", created_at: "2010-08-01 18:42:43", updated_at: "2010-08-01 18:42:43">
+    => <VestalVersions::Version id: 4, versioned_id: 2, versioned_type: "User", user_id: nil, user_type: nil, user_name: nil, modifications: {"created_at"=>Sun Aug 01 18:39:57 UTC 2010, "updated_at"=>Sun Aug 01 18:42:28 UTC 2010, "id"=>2, "last_name"=>"Jobs", "first_name"=>"Stephen"}, number: 3, version_tag: "deleted", created_at: "2010-08-01 18:42:43", updated_at: "2010-08-01 18:42:43">
     >> VestalVersions::Version.last.restore!
     => <User id: 2, first_name => "Steven", last_name: "Jobs", ... >
     >> @user = User.find(2)

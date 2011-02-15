@@ -12,7 +12,7 @@ describe VestalVersions::Versions do
 
     names.each do |name|
       subject.update_attribute(:name, name)
-      subject.tag_version(subject.version.to_s)
+      subject.version_tag_version(subject.version.to_s)
       time += 1.hour
 
       subject.versions.last.update_attribute(:created_at, time)
@@ -77,10 +77,10 @@ describe VestalVersions::Versions do
     end
   end
 
-  it 'is fetchable by tag' do
-    times.keys.map{|n| [n, n.to_s] }.each do |number, tag|
-      subject.versions.at(tag).should be_a(VestalVersions::Version)
-      subject.versions.at(tag).number.should == number
+  it 'is fetchable by version_tag' do
+    times.keys.map{|n| [n, n.to_s] }.each do |number, version_tag|
+      subject.versions.at(version_tag).should be_a(VestalVersions::Version)
+      subject.versions.at(version_tag).number.should == number
     end
   end
 
@@ -131,14 +131,14 @@ describe VestalVersions::Versions do
     end
   end
 
-  it 'provides a version number for a valid tag' do
-    times.keys.map{|n| [n, n.to_s] }.each do |number, tag|
-      subject.versions.number_at(tag).should be_a(Fixnum)
-      subject.versions.number_at(tag).should == number
+  it 'provides a version number for a valid version_tag' do
+    times.keys.map{|n| [n, n.to_s] }.each do |number, version_tag|
+      subject.versions.number_at(version_tag).should be_a(Fixnum)
+      subject.versions.number_at(version_tag).should == number
     end
   end
 
-  it 'returns nil when providing a version number for an invalid tag' do
+  it 'returns nil when providing a version number for an invalid version_tag' do
     subject.versions.number_at('INVALID').should be_nil
   end
 

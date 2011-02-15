@@ -7,33 +7,33 @@ describe VestalVersions::VersionTagging do
     user.update_attribute(:last_name, 'Jobs')
   end
 
-  context 'an untagged version' do
-    it "updates the version record's tag column" do
-      tag_name = 'TAG'
+  context 'an unversion_tagged version' do
+    it "updates the version record's version_tag column" do
+      version_tag_name = 'TAG'
       last_version = user.versions.last
 
-      last_version.tag.should_not == tag_name
-      user.tag_version(tag_name)
-      last_version.reload.tag.should == tag_name
+      last_version.version_tag.should_not == version_tag_name
+      user.version_tag_version(version_tag_name)
+      last_version.reload.version_tag.should == version_tag_name
     end
 
     it 'creates a version record for an initial version' do
       user.revert_to(1)
       user.versions.at(1).should be_nil
 
-      user.tag_version('TAG')
+      user.version_tag_version('TAG')
       user.versions.at(1).should_not be_nil
     end
   end
 
-  context 'A tagged version' do
+  context 'A version_tagged version' do
     subject{ user.versions.last }
 
     before do
-      user.tag_version('TAG')
+      user.version_tag_version('TAG')
     end
 
-    it { should be_tagged }
+    it { should be_version_tagged }
   end
 
 end

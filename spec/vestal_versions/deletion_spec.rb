@@ -20,9 +20,9 @@ describe VestalVersions::Deletion do
       expect{ subject.destroy }.to change{ VestalVersions::Version.count }.by(1)
     end
 
-    it "creates a version with a tag 'deleted'" do
+    it "creates a version with a version_tag 'deleted'" do
       subject.destroy
-      VestalVersions::Version.last.tag.should == 'deleted'
+      VestalVersions::Version.last.version_tag.should == 'deleted'
     end
 
   end
