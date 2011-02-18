@@ -21,6 +21,16 @@ module VestalVersions
       def versioned?
         false
       end
+
+			def editor
+				@@editor ||= nil
+			end
+
+			def editor=(user)
+				raise "#{user.class} expected to be a User" unless user.is_a?(User)
+				@@editor = user
+			end
+
     end
 
   end

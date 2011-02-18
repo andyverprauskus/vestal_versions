@@ -32,7 +32,7 @@ module VestalVersions
     def initial?
       number == 1
     end
-    
+
     # Returns the original version number that this version was.
     def original_number
       if reverted_from.nil?
