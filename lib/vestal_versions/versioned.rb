@@ -23,12 +23,12 @@ module VestalVersions
       end
 
 			def editor
-				@@editor ||= nil
+				Thread.current[:vestal_versions] ||= nil
 			end
 
 			def editor=(user)
-				raise "#{user.class} expected to be a User" unless user.is_a?(User)
-				@@editor = user
+				raise "#{user.class} expected to be a User" unless user.is_a?(User) || user.nil?
+				Thread.current[:vestal_versions] = user
 			end
 
     end
